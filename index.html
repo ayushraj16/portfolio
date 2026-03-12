@@ -154,7 +154,16 @@ section{padding:clamp(3.5rem,7vw,7rem) clamp(1.25rem,4vw,3rem)}
 #projects{background:var(--surface)}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:1.1rem}
 .pcard{border:1px solid var(--border);border-radius:8px;padding:1.75rem;background:var(--card);position:relative;overflow:hidden;transition:border-color .35s,box-shadow .35s;transform-style:preserve-3d;will-change:transform}
-.pcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,136,.04) 0%,transparent 60%);opacity:0;transition:opacity .3s}
+.pcard::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(0,255,136,.04) 0%, transparent 60%);
+  opacity:0;
+  transition:opacity .3s;
+  pointer-events:none; /* FIX */
+}
+
 .pcard:hover{border-color:var(--bhover);box-shadow:0 14px 45px var(--shadow)}
 .pcard:hover::before{opacity:1}
 .pcard.feat{grid-column:span 2}
@@ -165,7 +174,20 @@ section{padding:clamp(3.5rem,7vw,7rem) clamp(1.25rem,4vw,3rem)}
 .pstack{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.35rem}
 .sp{font-family:'DM Mono',monospace;font-size:.6rem;padding:.2rem .58rem;border-radius:100px;background:rgba(85,102,255,.1);border:1px solid rgba(85,102,255,.25);color:#8899ff}
 [data-theme="light"] .sp{background:rgba(51,68,204,.07);color:var(--accent3)}
-.plink{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--accent);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:.45rem;transition:gap .2s}
+.plink{
+  font-family:'DM Mono',monospace;
+  font-size:.7rem;
+  color:var(--accent);
+  text-decoration:none;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  transition:gap .2s;
+  position:relative;
+  z-index:5; /* FIX */
+}
 .plink:hover{gap:.8rem}
 
 /* CERTIFICATIONS */
