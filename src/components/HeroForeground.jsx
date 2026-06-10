@@ -38,10 +38,10 @@ export default function HeroForeground() {
 
   return (
     <div className="relative flex flex-col justify-between w-full h-full min-h-screen px-6 py-20 md:px-12 lg:px-20 z-10 pointer-events-none">
-      
+
       {/* Premium Minimalist Sticky/Absolute Top Navigation */}
       <header className="absolute top-0 left-0 right-0 px-6 py-6 md:px-12 lg:px-20 flex justify-between items-center w-full pointer-events-auto z-50 bg-gradient-to-b from-[#030303]/60 to-transparent backdrop-blur-[2px]">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -15 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -49,12 +49,12 @@ export default function HeroForeground() {
         >
           <span className="w-1.5 h-1.5 bg-[#10b981] rounded-full animate-pulse shadow-[0_0_8px_#10b981]" />
           <span className="text-xs uppercase font-mono tracking-[0.25em] font-bold text-white">
-            AYUSH K. RAJ
+            Version 4.0.12
           </span>
         </motion.div>
-        
+
         {/* Navigation Menu */}
-        <motion.nav 
+        <motion.nav
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
@@ -73,14 +73,14 @@ export default function HeroForeground() {
       </header>
 
       {/* Main Massive Kinetic Typography & Description */}
-      <motion.div 
+      <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="flex flex-col items-start my-auto w-full select-none pt-16"
       >
         <div className="overflow-hidden mb-1">
-          <motion.h1 
+          <motion.h1
             variants={textRevealVariants}
             className="text-6xl sm:text-8xl md:text-9xl lg:text-[11rem] font-extrabold uppercase leading-[0.82] tracking-tighter font-display text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e2e8f0] to-[#c7d2fe]"
           >
@@ -88,7 +88,7 @@ export default function HeroForeground() {
           </motion.h1>
         </div>
         <div className="overflow-hidden mb-6 md:mb-8">
-          <motion.h1 
+          <motion.h1
             variants={textRevealVariants}
             className="text-6xl sm:text-8xl md:text-9xl lg:text-[11rem] font-extrabold italic uppercase leading-[0.82] tracking-tighter font-display text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#10b981] pr-4 sm:pr-6 md:pr-8 lg:pr-12 filter drop-shadow-[0_0_30px_rgba(99,102,241,0.2)]"
           >
@@ -98,7 +98,7 @@ export default function HeroForeground() {
 
         {/* Cinematic Description */}
         <div className="overflow-hidden max-w-xl md:max-w-2xl mt-2">
-          <motion.p 
+          <motion.p
             variants={fadeUpVariants}
             className="text-sm md:text-base font-light text-slate-400 leading-relaxed pointer-events-auto"
           >
@@ -107,7 +107,7 @@ export default function HeroForeground() {
         </div>
 
         {/* Premium Luxury Statistics Grid */}
-        <motion.div 
+        <motion.div
           variants={fadeUpVariants}
           className="grid grid-cols-3 gap-3 md:gap-6 mt-12 w-full max-w-lg pointer-events-auto"
         >
@@ -128,7 +128,7 @@ export default function HeroForeground() {
 
       {/* Bottom Scroll HUD Indicator */}
       <div className="flex justify-between items-end w-full pt-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.4 }}
           transition={{ duration: 1, delay: 0.4 }}
