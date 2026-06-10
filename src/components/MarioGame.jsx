@@ -169,7 +169,6 @@ export default function MarioGame() {
     // 4. Score increment & speed scalar
     setScore(prev => {
       const nextScore = prev + 1;
-      // Increment speed slightly
       if (nextScore % 200 === 0) {
         speed.current += 0.45;
         playSound('score', muted);
@@ -178,10 +177,6 @@ export default function MarioGame() {
     });
 
     // 5. Collision Checks
-    // Container dimensions: width is 100%, height is 240px.
-    // Mario is fixed at 10% from the left edge.
-    // An obstacle at x% is colliding if it overlaps Mario's 10% bounds horizontally
-    // and Mario's height (marioY) is less than the obstacle height.
     const marioLeft = 10; // 10% left offset
     const containerWidth = containerRef.current ? containerRef.current.clientWidth : 400;
     const marioPercentWidth = (MARIO_WIDTH / containerWidth) * 100;
@@ -195,7 +190,7 @@ export default function MarioGame() {
 
       // Horizontal overlap check
       if (obsLeft < marioRight && obsRight > marioLeft) {
-        // Vertical check: Mario floor is marioY. Obstacle top is its height.
+        // Vertical check
         if (marioY.current < obs.height) {
           endGame();
           return; // Stop animation loop immediately
@@ -216,38 +211,66 @@ export default function MarioGame() {
     };
   }, []);
 
+  // Handle pointer/tap interactions on the container
+  const handleInteraction = (e) => {
+    // Detect touch to prevent double click triggers on mobile
+    if (e.type === 'touchstart') {
+      setIsFocused(true);
+      if (gameState === 'PLAYING') {
+        triggerJump();
+      } else {
+        startGame();
+      }
+      e.preventDefault(); // Stop click emulation
+    } else if (e.type === 'click') {
+      setIsFocused(true);
+      if (gameState === 'PLAYING') {
+        triggerJump();
+      } else {
+        startGame();
+      }
+    }
+  };
+
   return (
     <div 
       ref={containerRef}
-      onClick={() => setIsFocused(true)}
-      className={`relative w-full h-full bg-black/60 border rounded-lg overflow-hidden flex flex-col justify-end font-mono select-none ${
-        isFocused ? 'border-[#00ffaa]/50 border-glow-cyan' : 'border-white/10'
+      onClick={handleInteraction}
+      onTouchStart={handleInteraction}
+      className={`relative w-full h-full bg-black/70 border rounded-xl overflow-hidden flex flex-col justify-end font-mono select-none pointer-events-auto transition-all duration-300 ${
+        isFocused ? 'border-indigo-500/50 shadow-[0_0_15px_rgba(99,102,241,0.15)]' : 'border-white/10'
       }`}
     >
       {/* HUD Info Header */}
-      <div className="absolute top-3 left-4 right-4 flex justify-between items-center text-[10px] text-cyberTextMuted z-20">
+      <div className="absolute top-3 left-4 right-4 flex justify-between items-center text-[10px] text-slate-500 z-20">
         <div className="flex gap-4">
           <span>SCORE: <strong className="text-white">{score}</strong></span>
-          <span>HI-SCORE: <strong className="text-[#00ffaa]">{highScore}</strong></span>
+          <span>HI-SCORE: <strong className="text-indigo-400">{highScore}</strong></span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden md:inline">[ SPACE / CLICK TO JUMP ]</span>
+          <span className="hidden sm:inline">[ SPACE / CLICK TO JUMP ]</span>
+          <span className="inline sm:hidden">[ TAP TO JUMP ]</span>
           <button 
             onClick={(e) => {
               e.stopPropagation();
               setMuted(!muted);
             }} 
-            className="hover:text-[#ff2a5f] p-0.5"
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              setMuted(!muted);
+              e.preventDefault();
+            }}
+            className="hover:text-indigo-400 p-0.5 pointer-events-auto"
           >
-            {muted ? <VolumeX className="w-3.5 h-3.5 text-cyberPink" /> : <Volume2 className="w-3.5 h-3.5 text-[#00ffaa]" />}
+            {muted ? <VolumeX className="w-3.5 h-3.5 text-fuchsia-400" /> : <Volume2 className="w-3.5 h-3.5 text-indigo-400" />}
           </button>
         </div>
       </div>
 
       {/* Playfield Area */}
-      <div className="relative flex-1 border-b border-dashed border-[#00ffaa]/30">
+      <div className="relative flex-1 border-b border-dashed border-indigo-500/20">
         
-        {/* Mario sprite (Stylized Neon SVG Plumber) */}
+        {/* Mario sprite (Stylized Neon Indigo SVG Plumber) */}
         <div 
           className="absolute"
           style={{
@@ -259,21 +282,20 @@ export default function MarioGame() {
           }}
         >
           <svg viewBox="0 0 32 44" className="w-full h-full">
-            {/* Plumber body path */}
             <path 
               d="M 12,4 L 20,4 L 20,8 L 24,8 L 24,12 L 8,12 L 8,8 L 12,8 Z M 6,12 L 26,12 L 26,16 L 22,16 L 22,24 L 26,24 L 26,32 L 22,32 L 22,40 L 10,40 L 10,32 L 6,32 Z" 
               fill="none" 
-              stroke="#00ffaa" 
-              strokeWidth="1.5"
+              stroke="#6366f1" 
+              strokeWidth="1.8"
               className={gameState === 'PLAYING' && renderMarioY === 0 ? 'animate-pulse' : ''}
             />
             {/* Stylized Glowing Eyes */}
-            <rect x="14" y="6" width="2" height="2" fill="#ff2a5f" />
-            <rect x="18" y="6" width="2" height="2" fill="#ff2a5f" />
+            <rect x="14" y="6" width="2" height="2" fill="#10b981" />
+            <rect x="18" y="6" width="2" height="2" fill="#10b981" />
           </svg>
         </div>
 
-        {/* Spawning Goomba Obstacles */}
+        {/* Spawning Mushroom Obstacles */}
         {renderObstacles.map((obs) => (
           <div
             key={obs.id}
@@ -285,16 +307,15 @@ export default function MarioGame() {
               height: `${obs.height}px`,
             }}
           >
-            {/* Goomba Mushroom shape in Neon Pink */}
             <svg viewBox="0 0 26 32" className="w-full h-full">
               <path 
                 d="M 6,14 C 6,6 20,6 20,14 C 20,20 24,20 24,24 L 2,24 C 2,20 6,20 6,14 Z M 8,24 L 18,24 L 18,30 L 8,30 Z" 
                 fill="none" 
-                stroke="#ff2a5f" 
-                strokeWidth="1.5" 
+                stroke="#a855f7" 
+                strokeWidth="1.8" 
               />
-              <circle cx="10" cy="14" r="1.5" fill="#00ffaa" />
-              <circle cx="16" cy="14" r="1.5" fill="#00ffaa" />
+              <circle cx="10" cy="14" r="1.5" fill="#10b981" />
+              <circle cx="16" cy="14" r="1.5" fill="#10b981" />
             </svg>
           </div>
         ))}
@@ -302,7 +323,7 @@ export default function MarioGame() {
 
       {/* Decorative Ground Lines */}
       <div className="h-14 bg-black/40 flex items-center justify-center p-3 relative">
-        <div className="absolute inset-x-0 top-1 h-[2px] bg-gradient-to-r from-transparent via-[#00ffaa]/20 to-transparent" />
+        <div className="absolute inset-x-0 top-1 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
         
         {/* START SCREEN PANEL */}
         {gameState === 'START' && (
@@ -311,7 +332,12 @@ export default function MarioGame() {
               e.stopPropagation();
               startGame();
             }}
-            className="flex items-center gap-2 bg-[#00ffaa] text-black font-bold text-[10px] px-5 py-1.5 rounded uppercase tracking-wider hover:bg-white transition-colors duration-200 z-30 pointer-events-auto"
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              startGame();
+              e.preventDefault();
+            }}
+            className="flex items-center gap-2 bg-indigo-500 text-white font-bold text-[10px] px-5 py-1.5 rounded-lg uppercase tracking-widest hover:bg-white hover:text-black transition-colors duration-200 z-30 pointer-events-auto cursor-pointer"
           >
             <Play className="w-3 h-3 fill-current" />
             <span>PLAY MARIO RUNNER</span>
@@ -320,20 +346,20 @@ export default function MarioGame() {
 
         {/* ACTIVE / FOCUS PROMPT */}
         {gameState === 'PLAYING' && !isFocused && (
-          <span className="text-[9px] text-[#ff2a5f] uppercase tracking-widest animate-pulse">
-            [ CLICK GAME TO ENGAGE KEYBOARD INPUTS ]
+          <span className="text-[9px] text-fuchsia-400 uppercase tracking-widest animate-pulse">
+            [ CLICK GAME CONTAINER TO ENGAGE CONTROLS ]
           </span>
         )}
         {gameState === 'PLAYING' && isFocused && (
-          <span className="text-[9px] text-cyberTextMuted uppercase tracking-widest">
-            STABLE INTERACTION ENGAGED // PRESS SPACE TO JUMP
+          <span className="text-[9px] text-slate-500 uppercase tracking-widest">
+            INTERACTION ENGAGED // PRESS SPACE OR TAP TO JUMP
           </span>
         )}
 
         {/* GAMEOVER PANEL */}
         {gameState === 'GAMEOVER' && (
           <div className="flex items-center gap-4 z-30">
-            <span className="text-xs text-[#ff2a5f] font-bold uppercase tracking-widest glow-pink">
+            <span className="text-xs text-fuchsia-400 font-bold uppercase tracking-widest">
               GAME OVER
             </span>
             <button 
@@ -341,7 +367,12 @@ export default function MarioGame() {
                 e.stopPropagation();
                 startGame();
               }}
-              className="flex items-center gap-1.5 bg-[#ff2a5f] text-white font-bold text-[9px] px-3.5 py-1.5 rounded uppercase hover:bg-white hover:text-black transition-colors duration-200 pointer-events-auto"
+              onTouchStart={(e) => {
+                e.stopPropagation();
+                startGame();
+                e.preventDefault();
+              }}
+              className="flex items-center gap-1.5 bg-fuchsia-500 text-white font-bold text-[9px] px-3.5 py-1.5 rounded-lg uppercase hover:bg-white hover:text-black transition-colors duration-200 pointer-events-auto cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>RESTART</span>
